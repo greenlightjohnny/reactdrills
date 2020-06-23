@@ -4,6 +4,10 @@ import "./App.css";
 import Person from "../components/Person/Person";
 import Cockpit from "../components/cockpit/cockpit";
 class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log("#### APP.JS ###CONSTRUCTOR");
+  }
   state = {
     persons: [
       { id: 1, name: "Max", age: 27 },
@@ -13,8 +17,27 @@ class App extends Component {
     showPerson: false,
     textLength: "",
     currentText: "",
+    showCockpit: true,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("#### APP.jS ###GETDERIVEDSTATEFROMPROPS", props);
+    return state;
+  }
+
+  componentDidMount() {
+    console.log("### APP.JS ###COMPONENTDIDMOUNT");
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("###PERSONS.JS ###ShouldComponentUpdate");
+    return true;
+  }
+
+  componentDidMount() {
+    console.log("###APP.JS, ###COMPONENTDIDUPDATE");
+  }
   deletePersonHandler = (peepindex) => {
+    console.log("working#######");
     const currentpeeps = this.state.persons.slice();
     currentpeeps.splice(peepindex, 1);
     this.setState({ persons: currentpeeps });
@@ -71,7 +94,15 @@ class App extends Component {
   //   });
   // };
 
+  removeCockpit = () => {
+    const currentState = this.state.showCockpit;
+    this.setState({
+      showCockpit: !currentState,
+    });
+  };
+
   render() {
+    console.log("### APP.JS ###RENDER");
     let persons = null;
     if (this.state.showPerson) {
       persons = (
@@ -82,9 +113,21 @@ class App extends Component {
         />
       );
     }
+    let cockpit = null;
+    if (this.state.showCockpit) {
+      cockpit = (
+        <Cockpit
+          showPerson={this.state.showPerson}
+          personsLength={this.state.persons.length}
+          title={this.props.appTitle}
+          clicked={this.togglePersonHandler}
+        />
+      );
+    }
     return (
       <div className="App">
-        <Cockpit clicked={this.togglePersonHandler} />
+        <button onClick={this.removeCockpit}>Remove Cockpit</button>
+        {cockpit}
         {persons}
         {/* <Val
           update={(event) => this.updateText(event)}
